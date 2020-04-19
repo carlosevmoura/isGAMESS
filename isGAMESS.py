@@ -29,6 +29,7 @@ import subprocess
 import argparse
 #################################################
 
+
 class GamessJob():
     def __init__(self, _step):
         self.step = _step
@@ -45,7 +46,7 @@ class GamessJob():
         with open(self.output.fullpath, 'w') as file:
             subprocess.run([gamess.rungms, self.input.filename,
                             options.version, options.cpus],
-                            stdout=file, stderr=subprocess.DEVNULL)
+                           stdout=file, stderr=subprocess.DEVNULL)
 
         os.chdir(gamess.current)
         self.output.check_job()
@@ -78,7 +79,7 @@ class GamessJob():
             for line_number, line_data in enumerate(output_data):
                 if 'EXECUTION OF GAMESS TERMINATED -ABNORMALLY-' in line_data:
                     print('> ERROR: GAMESS job {} terminated abnormally.'
-                            .format(self.filename))
+                          .format(self.filename))
                     sys.exit()
 
         def get_final_energy(self):
@@ -121,19 +122,27 @@ class GamessJob():
 
             self.orbitals = raw_orbitals[start_line_number:]
 
+
 class InnerShellMCSCF():
     def __init__(self):
-        self.range = list(range(1, options.max_steps + 1))
+        self.fullpath = os.getcwd()
         self.loops = ['IS', 'FR']
 
-        for step_number in self.range:
-            for step_type in self.loops:
-                    self.step = self.Step(step_number, step_type)
-                    self.job = GamessJob(self.step)
-                    self.prepare_job_directory()
-                    self.job.run_gamess_job()
-                    self.check_energy_convergence()
-                    self.last = self.job
+        step_count = 1
+        self.converged = False
+
+        while not self.converged:
+            for step_loop in self.loops:
+                self.step = self.Step(step_count, step_loop)
+                self.job = GamessJob(self.step)
+
+                self.prepare_job_directory()
+                self.job.run_gamess_job()
+
+            self.write_energy_convergence(step_count)
+            self.converged = self.check_energy_convergence(step_count)
+            self.last = self.job
+            step_count += 1
 
     def prepare_job_directory(self):
         os.mkdir(self.job.fullpath)
@@ -155,21 +164,30 @@ class InnerShellMCSCF():
                 for line in self.last.dat.orbitals:
                     file.write(line)
 
-    def check_energy_convergence(self):
-        if self.step.number == 1:
-            with open(self.job.input.fullpath, 'w') as file:
-                file.write('{:<13s}\t{:<10s}'.format('Energy (Hartree)', 'Difference (Hartree'))
-                file.write('{:13.8f}\t{:10.8f}'.format(self.job.output.energy, 0.0))
+    def write_energy_convergence(self, _step_count):
+        self.log = os.path.join(self.fullpath, 'convergence.log')
+
+        if _step_count == 1:
+            with open(self.log, 'w') as file:
+                file.write('{:<13s}\t{:<10s}\n'.format('Energy (Hartree)', 'Difference (Hartree)'))
+                self.diff = 0.0
+                file.write('{:<13.8f}\t{:>10.8f}\n'.format(self.job.output.energy, self.diff))
         else:
             self.diff = self.job.output.energy - self.last.output.energy
 
-            with open(self.job.input.fullpath, 'w') as file:
-                file.write('{:13.8f}\t{:10.8f}'.format(self.job.output.energy, self.diff))
+            with open(self.log, 'a') as file:
+                file.write('{:<13.8f}\t{:10.8f}\n'.format(self.job.output.energy, self.diff))
+
+    def check_energy_convergence(self, _step_count):
+        if ((_step_count >= options.max_steps) or
+                ((self.diff <= options.cutoff) and (_step_count > 1))):
+            return True
 
     class Step():
-        def __init__(self, step_number, step_type):
-            self.number = step_number
-            self.type = step_type
+        def __init__(self, _step_number, _step_type):
+            self.number = _step_number
+            self.type = _step_type
+
 
 class GamessEnvironment():
     def __init__(self):
@@ -198,6 +216,7 @@ class GamessEnvironment():
             sys.exit()
 
         return path, rungms
+
 
 def get_options():
     """Function to obtaing the arguments from Terminal
@@ -243,6 +262,7 @@ def get_options():
 
     return parser.parse_args()
 
+
 # Main program
 if __name__ == '__main__':
 
@@ -252,5 +272,5 @@ if __name__ == '__main__':
     # Obtaining arguments from terminal
     options = get_options()
 
-    ## IS-MCSCF
+    # IS-MCSCF
     running = InnerShellMCSCF()
