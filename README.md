@@ -9,6 +9,11 @@ The IS-MCSCF method is a *double-loop* MCSCF procedure. The active space is spli
 ~ $ isGAMESS.py <input-file>
 ```
 
+## Environment Setup
+```sh
+~ $ export GMSPATH='<GAMESS FULL PATH>'
+```
+
 ## Next Implementations
 - Add automation when running post-MCSCF methos, like MRMP and MRCI;
 - Automate the construction of HEADER files;
