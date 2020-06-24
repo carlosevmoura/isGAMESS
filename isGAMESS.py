@@ -3,7 +3,7 @@
 ####################################################################################################
 #                                                                                                  #
 #                                           isGAMESS.py                                            #
-#           Python script to obtain geometries from a Gaussian09 Optimization Log File             #
+#          Python script to obtain Inner-Shell Excited States at MCSCF level using GAMESS          #
 #                                                                                                  #
 ####################################################################################################
 ### Author: Carlos E. V. de Moura, Ph.D. (https://github.com/carlosevmoura)                      ###
