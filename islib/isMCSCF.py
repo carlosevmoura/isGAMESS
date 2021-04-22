@@ -2,7 +2,7 @@
 ###                Loading modules               ###
 ####################################################
 ##            isGAMESS internal modules           ##
-from isGAMESS.gamessJob import jobSetup
+from islib.gamessJob import jobSetup
 ##        Operating System Interfaces Module      ##
 import os
 ##          High-level operations on files        ##
@@ -24,10 +24,11 @@ class InnerShellMCSCF():
 
                 self.prepare_job_directory(options)
                 self.job.run_gamess_job(gamess_env, options)
+                self.last = self.job
 
             self.write_energy_convergence(step_count)
             self.converged = self.check_energy_convergence(options, step_count)
-            self.last = self.job
+            self.step_last = self.job
             step_count += 1
 
     def prepare_job_directory(self, options):
@@ -59,14 +60,14 @@ class InnerShellMCSCF():
                 self.diff = 0.0
                 file.write('{:<13.8f}\t{:>10.8f}\n'.format(self.job.output.energy, self.diff))
         else:
-            self.diff = self.job.output.energy - self.last.output.energy
+            self.diff = self.job.output.energy - self.step_last.output.energy
 
             with open(self.log, 'a') as file:
                 file.write('{:<13.8f}\t{:10.8f}\n'.format(self.job.output.energy, self.diff))
 
     def check_energy_convergence(self, options, _step_count):
         if ((_step_count >= options.max_steps) or
-                ((self.diff <= options.cutoff) and (_step_count > 1))):
+                ((abs(self.diff) <= options.cutoff) and (_step_count > 1))):
             return True
 
     class Step():

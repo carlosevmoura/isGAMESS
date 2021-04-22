@@ -18,7 +18,7 @@
 ###                Loading modules               ###
 ####################################################
 ##            isGAMESS internal modules           ##
-from isGAMESS import gamessEnv, isOptions, isMCSCF
+from islib import gamessEnv, isOptions, isMCSCF
 ##        Operating System Interfaces Module      ##
 import os
 ##     System-specific parameters and functions   ##
