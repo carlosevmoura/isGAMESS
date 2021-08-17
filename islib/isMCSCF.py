@@ -2,7 +2,7 @@
 ###                Loading modules               ###
 ####################################################
 ##            isGAMESS internal modules           ##
-from islib.gamessJob import jobSetup
+from islib.gamessJob import jobSetup, jobSetupMRCI
 ##        Operating System Interfaces Module      ##
 import os
 ##          High-level operations on files        ##
@@ -74,3 +74,38 @@ class InnerShellMCSCF():
         def __init__(self, _step_number, _step_type):
             self.number = _step_number
             self.type = _step_type
+
+class InnerShellMRCI():
+    def __init__(self, gamess_env, _is_mcscf, options):
+        self.fullpath = os.getcwd()
+
+        self.job = jobSetupMRCI(options)
+
+        self.prepare_job_directory(options)
+        self.job.run_gamess_job(gamess_env, options)
+
+        self.write_final_energy()
+
+    def prepare_job_directory(self, options):
+        os.mkdir(self.job.fullpath)
+
+        _is_mcscf.last.dat.get_dat_geometry()
+        _is_mcscf.last.dat.get_dat_orbitals()
+
+        with open(self.job.header.fullpath, 'r') as file:
+            header = file.readlines()
+
+        with open(self.job.input.fullpath, 'w') as file:
+            for line in header:
+                file.write(line)
+            for line in _is_mcscf.last.dat.geometry:
+                file.write(line)
+            for line in _is_mcscf.last.dat.orbitals:
+                file.write(line)
+
+    def write_final_energy(self):
+        self.log = os.path.join(self.fullpath, 'mrci.log')
+
+        with open(self.log, 'w') as file:
+            file.write('{:<13s}\n'.format('Energy (Hartree)'))
+            file.write('{:<13.8f}\n'.format(self.job.output.energy))

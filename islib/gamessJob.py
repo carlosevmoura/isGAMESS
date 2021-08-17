@@ -100,3 +100,56 @@ class jobSetup():
                     break
 
             self.orbitals = raw_orbitals[start_line_number:]
+
+class jobSetupMRCI():
+    def __init__(self, options):
+        self.jobtitle = 'MRCI'
+        self.fullpath = os.path.abspath(self.jobtitle)
+
+        self.input = self.jobInput(self.fullpath, self.jobtitle)
+        self.output = self.jobOutput(self.fullpath, self.jobtitle)
+        self.header = self.jobHeader(options)
+
+    def run_gamess_job(self, gamess_env, options):
+        os.chdir(self.fullpath)
+        with open(self.output.fullpath, 'w') as file:
+            subprocess.run([gamess_env.rungms, self.input.filename,
+                            options.version, options.cpus],
+                           stdout=file, stderr=subprocess.DEVNULL)
+
+        os.chdir(gamess_env.current)
+        self.output.check_job()
+        self.output.get_final_energy()
+
+    class jobInput():
+        def __init__(self, _fullpath, _job_title):
+            self.filename = '{}.inp'.format(_job_title)
+            self.fullpath = os.path.join(_fullpath, self.filename)
+
+    class jobHeader():
+        def __init__(self, options):
+            self.filename = options.header_mrci
+            self.fullpath = os.path.abspath(self.filename)
+
+    class jobOutput():
+        def __init__(self, _fullpath, _job_title):
+            self.filename = '{}.out'.format(_job_title)
+            self.fullpath = os.path.join(_fullpath, self.filename)
+
+        def check_job(self):
+            with open(self.fullpath, 'r') as file:
+                output_data = file.readlines()
+
+            for line_number, line_data in enumerate(output_data):
+                if 'EXECUTION OF GAMESS TERMINATED -ABNORMALLY-' in line_data:
+                    print('> ERROR: GAMESS job {} terminated abnormally.'
+                          .format(self.filename))
+                    sys.exit()
+
+        def get_final_energy(self):
+            with open(self.fullpath, 'r') as file:
+                output_data = file.readlines()
+
+            for line_number, line_data in list(enumerate(output_data)):
+                if 'STATE   1  ENERGY=' in line_data:
+                    self.energy = float(line_data.strip().split()[3])

@@ -20,12 +20,12 @@ def get_options():
     parser.add_argument('--header-is', dest='header_inner_shell',
                         type=str,
                         default='HEADER-IS',
-                        help='???')
+                        help='GAMESS input filename containing keywords for inner-shell optimization')
 
     parser.add_argument('--header-fr', dest='header_frozen',
                         type=str,
                         default='HEADER-FR',
-                        help='???')
+                        help='GAMESS input filename containing keywords for valence optimization')
 
     parser.add_argument('--cutoff', dest='cutoff',
                         type=float,
@@ -46,6 +46,16 @@ def get_options():
                         type=str,
                         default='1',
                         help='number of CPUs to be used by GAMESS job')
+
+    parser.add_argument('--mrci', dest='mrci',
+                        type=bool,
+                        default=False,
+                        help='run IS-MRCI calculation after IS-MCSCF')
+
+    parser.add_argument('--header-mrci', dest='header_mrci',
+                        type=str,
+                        default='IS-MRCI',
+                        help='GAMESS input filename containing keywords for IS-MRCI calculation')
 
     return parser.parse_args()
 
