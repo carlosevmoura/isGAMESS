@@ -81,12 +81,12 @@ class InnerShellMRCI():
 
         self.job = jobSetupMRCI(options)
 
-        self.prepare_job_directory(options)
+        self.prepare_job_directory(_is_mcscf, options)
         self.job.run_gamess_job(gamess_env, options)
 
         self.write_final_energy()
 
-    def prepare_job_directory(self, options):
+    def prepare_job_directory(self, _is_mcscf, options):
         os.mkdir(self.job.fullpath)
 
         _is_mcscf.last.dat.get_dat_geometry()
