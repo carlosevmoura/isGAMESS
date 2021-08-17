@@ -15,7 +15,7 @@ The IS-MCSCF method is a *double-loop* MCSCF procedure. The active space is spli
 ```
 
 ## Next Implementations
-- Add automation when running post-MCSCF methos, like MRMP and MRCI;
+- Add automation when running IS-MRMP method;
 - Automate the construction of HEADER files;
 - Include options for mor than two ORMAS groups;
 
