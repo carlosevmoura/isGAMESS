@@ -81,15 +81,15 @@ class InnerShellMRCI():
 
         self.job = jobSetupMRCI(options)
 
-        if not os.path.isfile(self.job.input):
-            self.prepare_job_directory(_is_mcscf, options)
+        if not os.path.isfile(self.job.input.fullpath):
+            self.prepare_job_directory(_is_mcscf)
 
         if not options.skip_mrci:
             self.job.run_gamess_job(gamess_env, options)
 
             self.write_final_energy()
 
-    def prepare_job_directory(self, _is_mcscf, options):
+    def prepare_job_directory(self, _is_mcscf):
         os.mkdir(self.job.fullpath)
 
         _is_mcscf.last.dat.get_dat_geometry()
