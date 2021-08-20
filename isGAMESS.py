@@ -43,6 +43,8 @@ if __name__ == '__main__':
     # IS-MCSCF
     if not options.skip_mcscf:
         is_mcscf = isMCSCF.InnerShellMCSCF(gamess, options)
+    else:
+        is_mcscf = None
 
     # IS-MRCI
     if options.mrci:
