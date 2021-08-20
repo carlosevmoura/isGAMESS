@@ -41,7 +41,8 @@ if __name__ == '__main__':
     options = isOptions.get_options()
 
     # IS-MCSCF
-    is_mcscf = isMCSCF.InnerShellMCSCF(gamess, options)
+    if not options.skip_mcscf:
+        is_mcscf = isMCSCF.InnerShellMCSCF(gamess, options)
 
     # IS-MRCI
     if options.mrci:

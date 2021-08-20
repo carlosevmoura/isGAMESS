@@ -50,7 +50,17 @@ def get_options():
     parser.add_argument('--mrci', dest='mrci',
                         type=bool,
                         default=False,
-                        help='run IS-MRCI calculation after IS-MCSCF')
+                        help='enable IS-MRCI calculation after IS-MCSCF')
+
+    parser.add_argument('--skip-mrci', dest='skip_mrci',
+                        type=bool,
+                        default=False,
+                        help='create IS-MRCI calculation input files and skip its calculation')
+
+    parser.add_argument('--skip-mcscf', dest='skip_mcscf',
+                        type=bool,
+                        default=False,
+                        help='skip IS-MCSCF calculation and run previously prepared post-IS-MCSCF calculation')
 
     parser.add_argument('--header-mrci', dest='header_mrci',
                         type=str,
