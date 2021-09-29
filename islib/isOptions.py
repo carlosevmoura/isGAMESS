@@ -57,15 +57,30 @@ def get_options():
                         default=False,
                         help='create IS-MRCI calculation input files and skip its calculation')
 
-    parser.add_argument('--skip-mcscf', dest='skip_mcscf',
+    parser.add_argument('--mrmp', dest='mrmp',
                         type=bool,
                         default=False,
-                        help='skip IS-MCSCF calculation and run previously prepared post-IS-MCSCF calculation')
+                        help='enable IS-MRMP calculation after IS-MCSCF')
+
+    parser.add_argument('--skip-mrmp', dest='skip_mrmp',
+                        type=bool,
+                        default=False,
+                        help='create IS-MRMP calculation input files and skip its calculation')
 
     parser.add_argument('--header-mrci', dest='header_mrci',
                         type=str,
                         default='IS-MRCI',
                         help='GAMESS input filename containing keywords for IS-MRCI calculation')
+
+    parser.add_argument('--header-mrmp', dest='header_mrmp',
+                        type=str,
+                        default='IS-MRMP',
+                        help='GAMESS input filename containing keywords for IS-MRMP calculation')
+
+    parser.add_argument('--skip-mcscf', dest='skip_mcscf',
+                        type=bool,
+                        default=False,
+                        help='skip IS-MCSCF calculation and run previously prepared post-IS-MCSCF calculation')
 
     return parser.parse_args()
 

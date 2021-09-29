@@ -112,3 +112,41 @@ class InnerShellMRCI():
         with open(self.log, 'w') as file:
             file.write('{:<13s}\n'.format('Energy (Hartree)'))
             file.write('{:<13.8f}\n'.format(self.job.output.energy))
+
+class InnerShellMRMP():
+    def __init__(self, gamess_env, _is_mcscf, options):
+        self.fullpath = os.getcwd()
+
+        self.job = jobSetupMRMP(options)
+
+        if not os.path.isfile(self.job.input.fullpath):
+            self.prepare_job_directory(_is_mcscf)
+
+        if not options.skip_mrmp:
+            self.job.run_gamess_job(gamess_env, options)
+
+            self.write_final_energy()
+
+    def prepare_job_directory(self, _is_mcscf):
+        os.mkdir(self.job.fullpath)
+
+        _is_mcscf.last.dat.get_dat_geometry()
+        _is_mcscf.last.dat.get_dat_orbitals()
+
+        with open(self.job.header.fullpath, 'r') as file:
+            header = file.readlines()
+
+        with open(self.job.input.fullpath, 'w') as file:
+            for line in header:
+                file.write(line)
+            for line in _is_mcscf.last.dat.geometry:
+                file.write(line)
+            for line in _is_mcscf.last.dat.orbitals:
+                file.write(line)
+
+    def write_final_energy(self):
+        self.log = os.path.join(self.fullpath, 'mrmp.log')
+
+        with open(self.log, 'w') as file:
+            file.write('{:<13s}\n'.format('Energy (Hartree)'))
+            file.write('{:<13.8f}\n'.format(self.job.output.energy))
