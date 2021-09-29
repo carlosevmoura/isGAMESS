@@ -204,5 +204,5 @@ class jobSetupMRMP():
                 output_data = file.readlines()
 
             for line_number, line_data in list(enumerate(output_data)):
-                if 'TOTAL ENERGY =' in line_data:
-                    self.energy = float(line_data.strip().split()[3])
+                if '1     E(REF-CI)=' in line_data:
+                    self.energy = float(line_data.strip().split()[4])
