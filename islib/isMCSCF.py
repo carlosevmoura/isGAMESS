@@ -1,13 +1,13 @@
-####################################################
-###                Loading modules               ###
-####################################################
-##            isGAMESS internal modules           ##
-from islib.gamessJob import jobSetup, jobSetupMRCI
-##        Operating System Interfaces Module      ##
+##################################################################
+###                Loading modules                             ###
+##################################################################
+##            isGAMESS internal modules                         ##
+from islib.gamessJob import jobSetup, jobSetupMRCI, jobSetupMRMP
+##        Operating System Interfaces Module                    ##
 import os
-##          High-level operations on files        ##
+##          High-level operations on files                      ##
 import shutil
-####################################################
+##################################################################
 
 class InnerShellMCSCF():
     def __init__(self, gamess_env, options):
