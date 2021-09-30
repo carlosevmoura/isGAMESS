@@ -46,10 +46,10 @@ if __name__ == '__main__':
     else:
         is_mcscf = None
 
-    # IS-MRCI
-    if options.mrci:
-        is_mrci = isMCSCF.InnerShellMRCI(gamess, is_mcscf, options)
-
     # IS-MRMP
     if options.mrmp:
         is_mrmp = isMCSCF.InnerShellMRMP(gamess, is_mcscf, options)
+
+    # IS-MRCI
+    if options.mrci:
+        is_mrci = isMCSCF.InnerShellMRCI(gamess, is_mcscf, options)
