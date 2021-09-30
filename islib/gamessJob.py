@@ -66,7 +66,7 @@ class jobSetup():
                 output_data = file.readlines()
 
             for line_number, line_data in reversed(list(enumerate(output_data))):
-                if 'TOTAL ENERGY =' in line_data:
+                if '                       TOTAL ENERGY =' in line_data:
                     self.energy = float(line_data.strip().split()[3])
 
     class jobDat():
