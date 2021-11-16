@@ -69,9 +69,7 @@ class jobSetup():
                 if '                       TOTAL ENERGY =' in line_data:
                     self.energy = float(line_data.strip().split()[3])
 
-            try:
-                self.energy
-            except NameError:
+            if not hasattr(self, 'energy'):
                 for line_number, line_data in reversed(list(enumerate(output_data))):
                     if 'STATE=   1   ENERGY=' in line_data:
                         self.energy = float(line_data.strip().split()[3])
