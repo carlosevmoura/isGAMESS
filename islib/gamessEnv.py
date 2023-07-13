@@ -24,13 +24,12 @@ class EnvironmentSetup():
         # Check if 'rungms' script is found inside $GMSPATH
         if not os.path.isdir(path):
             print('> Directory $GMSPATH {} does not exist.'.format(path))
-            print(
-                'Please, set correctly the $GMSPATH variable: export GMSPATH=<GAMESS-DIR-PATH>')
+            print('Please, set correctly the $GMSPATH variable: export GMSPATH=<GAMESS-DIR-PATH>')
             sys.exit()
 
         if not os.path.isfile(rungms):
             print('rungms script not found.')
-            print('Please, set correctly the $GMSPATH variable: export GMSPATH=\< GAMESS-DIR-PATH\>')
+            print('Please, set correctly the $GMSPATH variable: export GMSPATH=<GAMESS-DIR-PATH>')
             sys.exit()
 
         return path, rungms
